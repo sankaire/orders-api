@@ -12,6 +12,7 @@ func main() {
 	db.CreateTables()
 	http.HandleFunc("/api/customer", handlers.CreateCustomerHandler)
 	http.HandleFunc("/api/customers", handlers.ReadCustomersHandler)
+	http.HandleFunc("/api/customer/login", handlers.LoginCustomerHandler)
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
