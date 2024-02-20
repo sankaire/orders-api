@@ -38,7 +38,9 @@ func CreateTables() {
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS customers (
 		id SERIAL PRIMARY KEY,
 		name TEXT,
-		code TEXT
+		phone TEXT,
+		email TEXT,
+		password TEXT
 	)
 `)
 	if err != nil {
