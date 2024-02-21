@@ -17,12 +17,8 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
-    - name: Load environment variables
-      run: |
-        echo "${{ secrets.ENV_FILE }}" > .env
-    - name: Print Environment Variables
-      run: |
-        echo "ENV_FILE=${.env}"
+    - name: Set up environment file
+      run: echo "$ENV_FILE_SECRET" > .env
     - name: Build
       run: go build -v ./...
 
