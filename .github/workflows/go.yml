@@ -20,6 +20,9 @@ jobs:
     - name: Load environment variables
       run: |
         echo "${{ secrets.ENV_FILE }}" > .env
+    - name: Print Environment Variables
+      run: |
+        echo "ENV_FILE=${.env}"
     - name: Build
       run: go build -v ./...
 
