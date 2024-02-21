@@ -15,7 +15,7 @@ func Connect() (*sql.DB, error) {
 	//	log.Fatal("Error loading .env file")
 	//
 	//}
-	bdUri := os.Getenv("DB_URU")
+	bdUri := os.Getenv("DB_URI")
 	var db *sql.DB
 	//var err error
 	//psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
