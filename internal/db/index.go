@@ -3,24 +3,25 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 func Connect() (*sql.DB, error) {
-	const (
-		host     = "localhost"
-		port     = 5432
-		user     = "postgres"
-		password = "0000"
-		dbname   = "db1"
-	)
+	err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatal("Error loading .env file")
+	//
+	//}
+	bdUri := os.Getenv("DB_URU")
 	var db *sql.DB
-	var err error
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-	db, err = sql.Open("postgres", psqlInfo)
+	//var err error
+	//psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	//	"password=%s dbname=%s sslmode=disable",
+	//	host, port, user, password, dbname)
+	db, err = sql.Open("postgres", bdUri)
 	if err != nil {
 		panic(err)
 	}
