@@ -23,6 +23,8 @@ jobs:
       run: go build -v ./...
     - name: Install godotenv
       run: go get github.com/joho/godotenv/cmd/godotenv
-    - name: Run tests
+      
+    - name: Run tests with godotenv
       run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
         godotenv -f ./.env go test ./internal/... -cover
