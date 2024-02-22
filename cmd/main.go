@@ -12,10 +12,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
+	godotenv.Load()
 	port := os.Getenv("PORT")
 	db.CreateTables()
 	http.HandleFunc("/api/customer", handlers.CreateCustomerHandler)
