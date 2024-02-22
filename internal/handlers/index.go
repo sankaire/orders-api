@@ -22,15 +22,17 @@ func CreateCustomerHandler(response http.ResponseWriter, request *http.Request) 
 		Phone    string `json:"phone"`
 		Password string `json:"password"`
 	}
-
 	if err := json.NewDecoder(request.Body).Decode(&customer); err != nil {
-		response.WriteHeader(http.StatusBadRequest)
 		utils.WriteResponse(response, http.StatusBadRequest, false, err.Error(), nil)
+		return
+	}
+	id, _, _, _, err := repository.ReadCustomerByEmail(customer.Email)
+	if id != 0 {
+		utils.WriteResponse(response, http.StatusBadRequest, false, "User already exists.", nil)
 		return
 	}
 	hashedPassword, err := utils.EncryptPassword(customer.Password)
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
 		utils.WriteResponse(response, http.StatusBadRequest, false, err.Error(), nil)
 		return
 	}
@@ -42,7 +44,6 @@ func CreateCustomerHandler(response http.ResponseWriter, request *http.Request) 
 
 	name, email, phone, err := repository.ReadCustomer(customerID)
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
 		utils.WriteResponse(response, http.StatusInternalServerError, false, "An error occurred", nil)
 		return
 	}
