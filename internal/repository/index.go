@@ -88,20 +88,20 @@ func CreateOrder(customerID any, item string, amount int) (int64, error) {
 	}
 	return orders.ID, nil
 }
-func ReadCustomerOrder(orderID int64) (int64, any, string, int64, time2.Time, error) {
+func ReadCustomerOrder(customerID any, orderID int64) (int64, any, string, int64, time2.Time, error) {
 	schema, err := db.Connect()
 	if err != nil {
 		return 0, 0, "", 0, time2.Time{}, nil
 	}
 	defer schema.Close()
 
-	var orders Orders
-	err = schema.QueryRow("SELECT id,customer_id,item,amount,time FROM orders WHERE id = $1", orderID).Scan(&orders.ID, &orders.CustomerID, &orders.Item, &orders.Amount, &orders.Time)
+	var order Orders
+	err = schema.QueryRow("SELECT id, customer_id, item, amount, time FROM orders WHERE customer_id = $1 AND id = $2", customerID, orderID).Scan(&order.ID, &order.CustomerID, &order.Item, &order.Amount, &order.Time)
 	if err != nil {
 		return 0, 0, "", 0, time2.Time{}, err
 	}
 
-	return orders.ID, orders.CustomerID, orders.Item, orders.Amount, orders.Time, nil
+	return order.ID, order.CustomerID, order.Item, order.Amount, order.Time, nil
 }
 func ReadAllCustomerOrder(customerID any) ([]Orders, error) {
 	schema, err := db.Connect()
