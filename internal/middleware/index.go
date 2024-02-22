@@ -23,7 +23,7 @@ func Authenticate(next http.Handler) http.Handler {
 		tokenString = parts[1]
 		token, err := utils.VerifyToken(tokenString)
 		if err != nil {
-			utils.WriteResponse(response, http.StatusUnauthorized, false, "An error occurred", nil)
+			utils.WriteResponse(response, http.StatusUnauthorized, false, err.Error(), nil)
 			return
 		}
 		claims, ok := token.Claims.(jwt.MapClaims)
