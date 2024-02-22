@@ -38,32 +38,6 @@ func CreateCustomer(name string, phone string, email string, password string) (i
 	}
 	return customerID, nil
 }
-func ReadCustomers() ([]Customers, error) {
-	schema, err := db.Connect()
-	if err != nil {
-		return []Customers{}, err
-	}
-	defer schema.Close()
-	rows, err := schema.Query("SELECT id, name, email, phone,password FROM customers")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var customers []Customers
-	for rows.Next() {
-		var customer Customers
-		if err := rows.Scan(&customer.ID, &customer.Name, &customer.Email, &customer.Phone, &customer.Password); err != nil {
-			return nil, err
-		}
-		customers = append(customers, customer)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return customers, nil
-}
 func ReadCustomer(customerID int64) (string, string, string, error) {
 	schema, err := db.Connect()
 	if err != nil {

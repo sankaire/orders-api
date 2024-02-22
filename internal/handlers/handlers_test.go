@@ -36,21 +36,6 @@ func TestCreateCustomerHandler(t *testing.T) {
 	}
 }
 
-func TestReadCustomersHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "/read-customers", nil)
-	if err != nil {
-		t.Fatalf("failed to create request: %v", err)
-	}
-
-	rr := httptest.NewRecorder()
-
-	handlers.ReadCustomersHandler(rr, req)
-
-	if rr.Code != http.StatusOK {
-		t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
-	}
-}
-
 func TestLoginCustomerHandler(t *testing.T) {
 	reqBody := map[string]string{
 		"email":    "john@example.com",

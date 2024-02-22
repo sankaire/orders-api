@@ -6,6 +6,7 @@ import (
 	"github.com/sankaire/orders-api/internal/db/internal/repository"
 	"github.com/sankaire/orders-api/internal/db/internal/utils"
 	"net/http"
+	"strconv"
 	time2 "time"
 )
 
@@ -65,30 +66,6 @@ func CreateCustomerHandler(response http.ResponseWriter, request *http.Request) 
 	}
 	utils.WriteResponse(response, http.StatusCreated, true, "Account created successfully", customerResults)
 	return
-}
-func ReadCustomersHandler(response http.ResponseWriter, request *http.Request) {
-	if request.Method != http.MethodGet {
-		response.WriteHeader(http.StatusMethodNotAllowed)
-		utils.WriteResponse(response, http.StatusMethodNotAllowed, false, "Method not allowed", nil)
-		return
-	}
-	customers, err := repository.ReadCustomers()
-	if err != nil {
-		utils.WriteResponse(response, http.StatusOK, false, "Customers not found", nil)
-		return
-	}
-	customerResponse, err := json.Marshal(customers)
-	if err != nil {
-		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
-		return
-	}
-	var customersResult interface{}
-
-	err = json.Unmarshal(customerResponse, &customersResult)
-	if err != nil {
-		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
-	}
-	utils.WriteResponse(response, http.StatusOK, true, "Customers fetched successfully", customersResult)
 }
 
 func LoginCustomerHandler(response http.ResponseWriter, request *http.Request) {
@@ -204,6 +181,47 @@ func CreateCustomerOrder(response http.ResponseWriter, request *http.Request) {
 	utils.WriteResponse(response, http.StatusCreated, true, "Order created successfully", ordersResult)
 	return
 }
+func ReadCustomerOrder(response http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodGet {
+		utils.WriteResponse(response, http.StatusBadRequest, false, "Method Not allowed", nil)
+		return
+	}
+	orderID := request.URL.Query().Get("id")
+	customerID := request.Context().Value("id")
+	orderIDInt, err := strconv.Atoi(orderID)
+	if err != nil {
+		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
+		return
+	}
+	_, _, item, amount, time, err := repository.ReadCustomerOrder(int64(orderIDInt))
+	var Payload = struct {
+		ID         int64      `json:"ID"`
+		CustomerID any        `json:"customerID"`
+		Item       string     `json:"item"`
+		Amount     int64      `json:"amount"`
+		Time       time2.Time `json:"time"`
+	}{
+		ID:         int64(orderIDInt),
+		CustomerID: customerID,
+		Item:       item,
+		Amount:     amount,
+		Time:       time,
+	}
+	var orderResult interface{}
+	orderResponse, err := json.Marshal(Payload)
+	if err != nil {
+		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
+		return
+	}
+
+	err = json.Unmarshal(orderResponse, &orderResult)
+	if err != nil {
+		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
+		return
+	}
+	utils.WriteResponse(response, http.StatusOK, true, "Order created successfully", orderResult)
+	return
+}
 func ReadAllCustomerOrdersHandler(response http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodGet {
 		utils.WriteResponse(response, http.StatusBadRequest, false, "Method Not allowed", nil)
@@ -213,7 +231,6 @@ func ReadAllCustomerOrdersHandler(response http.ResponseWriter, request *http.Re
 
 	orders, err := repository.ReadAllCustomerOrder(customerID)
 	if err != nil {
-		response.WriteHeader(http.StatusInternalServerError)
 		utils.WriteResponse(response, http.StatusOK, false, "Customers not found", nil)
 		return
 	}
