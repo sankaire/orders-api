@@ -29,8 +29,6 @@ type ResponseEnvelope struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-var secretKey = []byte(os.Getenv("SECRET_KEY"))
-
 func EncryptPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -46,6 +44,7 @@ func ComparePassword(hashedPassword string, textPassword string) (bool, error) {
 	return true, err
 }
 func CreateToken(payload JWTPayload) (string, error) {
+	var secretKey = []byte(os.Getenv("SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"email": payload.Email,
@@ -60,6 +59,7 @@ func CreateToken(payload JWTPayload) (string, error) {
 	return tokenString, err
 }
 func VerifyToken(tokenString string) (*jwt.Token, error) {
+	var secretKey = []byte(os.Getenv("SECRET_KEY"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
