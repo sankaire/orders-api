@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"github.com/sankaire/orders-api/internal/db/internal/db"
 	"github.com/sankaire/orders-api/internal/db/internal/handlers"
 	"github.com/sankaire/orders-api/internal/db/internal/middleware"
@@ -13,10 +12,6 @@ import (
 
 func main() {
 	db.CreateTables()
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 	port := os.Getenv("PORT")
 	http.HandleFunc("/api/customer", handlers.CreateCustomerHandler)
 	http.Handle("/api/customers", middleware.Authenticate(http.HandlerFunc(handlers.ReadCustomersHandler)))
