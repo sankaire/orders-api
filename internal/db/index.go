@@ -3,39 +3,36 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
-	"os"
 )
 
 func Connect() (*sql.DB, error) {
-	err := godotenv.Load()
+	//err := godotenv.Load()
 	//if err != nil {
-	//	log.Fatal("Error loading .env file")
-	//
+	//	panic("Error loading .env file")
 	//}
-	bdUri := os.Getenv("DB_URI")
-	var db *sql.DB
-	//var err error
-	//psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	//	"password=%s dbname=%s sslmode=disable",
-	//	host, port, user, password, dbname)
-	db, err = sql.Open("postgres", bdUri)
+	//dbURI := os.Getenv("DB_URI")
+	//if dbURI == "" {
+	//	panic("DB_URI environment variable not set")
+	//}
+	//
+	//fmt.Println("DB_URI:", "dbURI")
+	db, err := sql.Open("postgres", "postgres://gxvhqpskrrabic:18df20bd44f4ee663808faadc5395258e2ce539d82aad6da8bfe4cfbfd275644@ec2-54-78-142-10.eu-west-1.compute.amazonaws.com:5432/d4ppro9ijibn6c")
 	if err != nil {
 		panic(err)
 	}
-	err = db.Ping()
 
+	err = db.Ping()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected to db")
+
+	fmt.Println("Successfully connected to the database")
 	return db, nil
 }
 func CreateTables() {
 	db, err := Connect()
-
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS customers (
 		id SERIAL PRIMARY KEY,
 		name TEXT,

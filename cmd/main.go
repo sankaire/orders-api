@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	db.CreateTables()
 	port := os.Getenv("PORT")
+	db.CreateTables()
 	http.HandleFunc("/api/customer", handlers.CreateCustomerHandler)
 	http.Handle("/api/customers", middleware.Authenticate(http.HandlerFunc(handlers.ReadCustomersHandler)))
 	http.HandleFunc("/api/customer/login", handlers.LoginCustomerHandler)
