@@ -29,7 +29,7 @@ type ResponseEnvelope struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-var secretKey = []byte("secret-key")
+var secretKey = []byte(os.Getenv("SECRET_KEY"))
 
 func EncryptPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

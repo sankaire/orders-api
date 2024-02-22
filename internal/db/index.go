@@ -3,22 +3,16 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 func Connect() (*sql.DB, error) {
-	//err := godotenv.Load()
-	//if err != nil {
-	//	panic("Error loading .env file")
-	//}
-	//dbURI := os.Getenv("DB_URI")
-	//if dbURI == "" {
-	//	panic("DB_URI environment variable not set")
-	//}
-	//
-	//fmt.Println("DB_URI:", "dbURI")
-	db, err := sql.Open("postgres", "postgres://gxvhqpskrrabic:18df20bd44f4ee663808faadc5395258e2ce539d82aad6da8bfe4cfbfd275644@ec2-54-78-142-10.eu-west-1.compute.amazonaws.com:5432/d4ppro9ijibn6c")
+	godotenv.Load()
+	dbURI := os.Getenv("DB_URI")
+	db, err := sql.Open("postgres", dbURI)
 	if err != nil {
 		panic(err)
 	}
