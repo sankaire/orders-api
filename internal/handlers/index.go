@@ -145,7 +145,7 @@ func CreateCustomerOrder(response http.ResponseWriter, request *http.Request) {
 		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
 		return
 	}
-	_, _, item, amount, time, err := repository.ReadCustomerOrder(orderID)
+	_, _, item, amount, time, err := repository.ReadCustomerOrder(id, orderID)
 	var Payload = struct {
 		ID         int64      `json:"ID"`
 		CustomerID any        `json:"customerID"`
@@ -194,7 +194,11 @@ func ReadCustomerOrder(response http.ResponseWriter, request *http.Request) {
 		utils.WriteResponse(response, http.StatusInternalServerError, false, err.Error(), nil)
 		return
 	}
-	_, _, item, amount, time, err := repository.ReadCustomerOrder(int64(orderIDInt))
+	_, _, item, amount, time, err := repository.ReadCustomerOrder(customerID, int64(orderIDInt))
+	if item == "" {
+		utils.WriteResponse(response, http.StatusOK, false, "Order not found", nil)
+		return
+	}
 	var Payload = struct {
 		ID         int64      `json:"ID"`
 		CustomerID any        `json:"customerID"`
